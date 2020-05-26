@@ -1,1 +1,17 @@
-
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+    <body>
+        <header>
+            <h1>ArgMine</h1>
+        </header>
+        <form method="POST">
+            <label for="sourcedata">Source Dataset:</label><br>
+            <input type="text" id="sourcedata" name="sourcedata" value=""><br>
+            <label for="edata">External Dataset:</label><br>
+            <input type="text" id="edata" name="edata" value=""><br><br>
+            <input type="submit" value="Submit">
+	    </form>
+    </body>
+</html>
