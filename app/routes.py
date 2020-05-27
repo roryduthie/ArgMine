@@ -8,6 +8,7 @@ import urllib
 import tempfile
 import os
 import uuid
+from joblib import load
 
 
 @app.route('/')
@@ -34,5 +35,21 @@ def index_post():
 def render_text():
     source_text = session.get('s_text', None)
     print(source_text)
+    txt_df = sent_to_df(source_text)
+    result = predict_topic(txt_df)
+    print(result)
     return render_template('results.html', source_text=source_text)
+
+def sent_to_df(txt):
+    txt_pred = {'text': [txt]}
+    df = pd.DataFrame(data=txt_pred)
+    return df
+
+def predict_topic(df):
+    model_path = 'static/model/hansard_topic_model.joblib'
+    with app.open_resource(model_path) as load_m:
+        loaded_m = load(load_m)
+    pred = loaded_m.predict(df)
+    result = pred[0]
+    return result
 
