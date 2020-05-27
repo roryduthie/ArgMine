@@ -26,11 +26,13 @@ def index_post():
     session['e_text'] = external_text
     session['aif'] = aif_mode
     session['han'] = han_mode
+
     return redirect('/results')
 
 
 @app.route('/results')
 def render_text():
     source_text = session.get('s_text', None)
+    print(source_text)
     return render_template('results.html', source_text=source_text)
 
