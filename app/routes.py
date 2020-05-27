@@ -46,10 +46,10 @@ def sent_to_df(txt):
     return df
 
 def predict_topic(df):
-    model_path = 'static/model/hansard_topic_model.joblib'
+    model_path = 'static/model/hansard_topics.joblib'
     with app.open_resource(model_path) as load_m:
         loaded_m = load(load_m)
-    pred = loaded_m.predict(df)
+    pred = loaded_m.predict(df['text'])
     result = pred[0]
     return result
 
