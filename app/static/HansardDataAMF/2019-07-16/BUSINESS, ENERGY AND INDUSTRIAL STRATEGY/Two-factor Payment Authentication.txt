@@ -1,0 +1,8 @@
+Chuka Umunna: What assessment he has made of the effect of two factor payment authentication on (a) consumers and (b) businesses. 
+
+Kelly Tolhurst: The implementation of strong customer authentication, which mandates two factor authentication for some online payments, will introduce more secure payments for individuals and businesses. That was introduced by the second payment services directive. The Treasury published an impact assessment on the implementation of that EU directive in 2017.
+
+Chuka Umunna: I am staggered that the Government are not doing more about this ticking timebomb for online retail, which is on track to cause major disruption. The British Retail Consortium estimates that 75% of retailers are unaware that it is coming into effect in September. It is the same for consumers. The implementation is forecast to lead to the failure of nearly a third of e commerce transactions from September, due to poor access to a proper phone signal or wi fi. Will the Minister ensure that no enforcement action will be taken for at least 18 months, to give our retail sector breathing space to adapt to the new rules?
+
+Kelly Tolhurst: I point out that there was £309 million worth of fraud in e commerce in 2016 versus £13.6 million in 1998. The hon. Gentleman will know that the European Banking Authority published an opinion on readiness for implementation and the Financial Conduct Authority published a statement in June. They are working on mitigations past the September implementation date. They are working with industry and providers to make sure that the essence of the changes prevail, which is to make it safer for merchants and consumers.
+

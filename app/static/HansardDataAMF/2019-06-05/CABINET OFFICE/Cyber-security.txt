@@ -1,0 +1,16 @@
+Craig Tracey: What steps his Department is taking to help improve the cyber security of public and private sector organisations. 
+
+David Lidington: The National Cyber Security Centre provides expert technical advice to Departments and Government contractors, but also to the wider private and public sectors, on how to prevent, detect and recover from cyber attacks.
+
+Craig Tracey: I thank my right hon. Friend for that answer. Does he agree that, while it is important to ensure we protect the Government from attacks to new systems, we protect legacy systems, too?
+
+David Lidington: I completely agree. Whoever leads the next Government, it would be good advice for the relevant Department to take forward a consolidated bid in the next public spending round, so that this issue can be tackled on a cross Government basis.
+
+Nick Smith: Providing national insurance data can be at the root of the difficulties that young people face when registering to vote. Will the Minister identify how Departments can better share data with local councils to help more people exercise their democratic right and still ensure cyber security?
+
+David Lidington: We are looking at the potential reform of the canvassing operation by local authorities to compile the electoral register. As the hon. Gentleman will appreciate, there is a fine balance to be struck between the benefits one gets from data sharing between different Government agencies and the importance of maintaining the confidentiality of very sensitive private data.
+
+Jo Platt: Today, the Public Accounts Committee found that, incredibly, a third of the funding for the Government’s cyber security strategy has been transferred or loaned to other Government projects and that £69 million of cyber funding has been taken from the strategy completely. Will the Minister confirm whether that is because the Government do not think our cyber security is an important priority for them, or whether that is because even national security is not exempt from Tory austerity?
+
+David Lidington: What the report shows very clearly is that the cyber security of this country, and particularly of Government Departments and agencies, has been strengthened since the introduction and implementation of the national cyber security strategy. The work that the National Cyber Security Centre, in particular, is leading on is helping Government Departments and the private sector alike to keep in touch with the developing and changing nature of the threat and to raise our defences accordingly.
+

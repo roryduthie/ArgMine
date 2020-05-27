@@ -1,0 +1,22 @@
+Virendra Sharma: What steps his Department is taking to help improve the cyber security of (a) public and (b) private sector organisations. 
+
+Stephen Doughty: What steps the Government are taking to help ensure the security of (a) UK Government assets and (b) critical national infrastructure from cyber attacks. 
+
+David Lidington: The National Cyber Security Centre is providing advice and practical guidance on how to improve standards of cyber security to organisations in both the public and private sectors.
+
+Virendra Sharma: The Minister will know that the cyber defence of the Government and industry is stronger when the best skills from around the country are deployed. With that in mind, what is he doing to encourage women and those from a black and minority ethnic background in the UK to develop their mathematical and IT skills from an early age, and to enter the cyber security field, to protect our country and businesses?
+
+David Lidington: The hon. Gentleman raises an important point. We do need to improve our cyber skills capacity. I am very pleased that more than 55,000 young men and women have now taken part in the CyberFirst and Cyber Discovery schemes that the NCSC helps to organise, but he is right that we need to make a particular effort with under represented groups, including bright young men and women from our ethnic minority communities.
+
+Stephen Doughty: Given the shocking leaks we have seen from the National Security Council and of diplomatic telegrams, can the Minister for the Cabinet Office give some reassurance to our civil servants on the cyber security of crucial confidential documents and their ability not to be compromised by foreign states or insider jobs?
+
+David Lidington: The hon. Gentleman would not expect me to comment on individual cases, but he is right about the need both for the highest possible levels of technical cyber security in protecting those systems, and for the highest standards of discipline and respect for the confidentiality of advice on the part of everybody who has access to such material.
+
+Patrick McLoughlin: Cyber security is one of the biggest threats facing not only the Government, but our major and smaller companies. What will my right hon. Friend do to ensure that the private sector has access to the ability of state services?
+
+David Lidington: The great strength of the NCSC is that it makes available the expertise developed by our agencies, in particular GCHQ, in a way that permits open access by private sector companies and third sector organisations. I held a roundtable in recent months with directors of FTSE 350 companies to highlight concerns and challenges, and to learn from their experience. There is a range of materials targeted particularly at small and medium sized enterprises.
+
+Theresa Villiers: What assessment have the Government made on whether the leaking of Kim Darroch’s statements was the result of a cyber attack by a foreign Government?
+
+David Lidington: I hope my right hon. Friend will understand that I cannot make any comment about an inquiry that is in progress. I will say, however, that I hope the person or persons responsible will be found out and that they will be subjected to all appropriate disciplinary and, if necessary, legal sanction.
+

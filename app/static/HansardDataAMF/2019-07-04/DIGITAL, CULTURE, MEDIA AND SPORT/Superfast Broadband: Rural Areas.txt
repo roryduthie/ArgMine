@@ -1,0 +1,24 @@
+Daniel Kawczynski: What recent progress his Department has made on increasing access to superfast broadband in rural areas.
+
+Margot James: The Government’s superfast broadband programme has met its target and is now providing superfast coverage to 97% of premises, including 94.8% of premises in my hon. Friend’s constituency. In addition, we have just launched the rural gigabit connectivity programme, with £200 million of funding, to begin to deliver even faster, gigabit speeds to the most remote and rural parts of the UK.
+
+Daniel Kawczynski: I thank my hon. Friend for that answer. Clearly, improved access to superfast broadband in places such as Shropshire will reduce the number of car journeys needing to be made. What assessment has her Department made of that improvement in helping us to reach the net zero carbon contribution target we have set?
+
+Margot James: My hon. Friend makes a very good point. Although we have not conducted a specific study on the environmental impact of faster broadband speeds, we have considered it as part of a wider evaluation. We have found that the use of cloud computing has an effect in reducing commuting time, and we will be exploring this more specifically in our superfast broadband programme evaluation next year.
+
+Chris Elmore: May I ask the Minister, in using the word “rural”, not to forget communities in the south Wales valleys that can be quite socially isolated? Will she set out what funding she will put in place to deal with the geography of some of the south Wales valleys, which are still suffering with painfully slow broadband?
+
+Margot James: I think the hon. Gentleman asked me a similar question last summer, and I am delighted to say that his intervention last year led directly to my recommending to the Chancellor that he include the Welsh valleys in the first pilot of the roll out of the rural gigabit connectivity programme, so the hon. Gentleman can hold us to that. I also want to mention that the voucher scheme has been enhanced, so that small and medium sized enterprises in the Welsh valleys will now get access to a voucher worth £3,500 and residents a voucher worth £1,500 to connect on to the public buildings that the programme will connect.
+
+Jo Johnson: In my hon. Friend’s excellent work in rolling out broadband to rural areas, will she ensure that we do not inadvertently neglect urban and semi urban areas in the London borough of Bromley? Areas around Down and Farnborough village have woeful access and, sadly, BT does not have plans to roll out the fibre needed to upgrade it. Could she possibly help?
+
+Margot James: I will certainly help my hon. Friend. He points out that suburban and urban areas have a really worrying lack of access not so much to superfast, but certainly to decent speeds. We are incorporating those via incentives to the private sector to connect. That is now going very well indeed, with Openreach alone connecting 20,000 premises a week.
+
+Christine Jardine: As more and more of our banks are closing branches across the country, it is becoming vital for people, particularly in  rural areas, to have access to online facilities and good broadband. The way this has been rolled out, particularly in Scotland, has not suited rural communities. Can the Minister assure me that there will be discussions with the Treasury, the Scottish Government and the local authorities that will be involved in the future to ensure that our communities in Scotland actually get a better service and are able to access finances?
+
+Margot James: I sympathise with the hon. Lady. Unfortunately, there have been appalling delays to the procurement system underpinning the Scottish Government’s R100—Reaching 100%—programme. I am reliably informed that they are almost at the end of that process and that they are about to award contracts this autumn. It has been a painful process, but my officials have been discussing it with the Scottish Government, and I am confident that it will be improved. We also have programmes from my Department that are already rolling out in Scotland.
+
+Jim Shannon: The Minister will be aware that, under the confidence and supply agreement with the Democratic Unionist party, the Government have set aside some hundreds of millions of pounds for rural broadband across all of Northern Ireland. What discussions has she had with the Department of Enterprise, Trade and Investment in Northern Ireland to ensure that that rural broadband roll out is completed?
+
+Margot James: I know that in the hon. Gentleman’s constituency and in the rest of Northern Ireland there has obviously been a delay in deploying that budget on account of there being no Government in Northern Ireland. My officials are in discussions with the Department for Business, Energy and Industrial Strategy to ameliorate that situation, and I will write to him with the latest details.
+
