@@ -9,6 +9,7 @@ import tempfile
 import os
 import uuid
 from joblib import load
+from app.centrality import Centrality
 
 
 @app.route('/')
@@ -34,7 +35,12 @@ def index_post():
 @app.route('/results')
 def render_text():
     source_text = session.get('s_text', None)
-    print(source_text)
+    external_text = session.get('e_text', None)
+    aif_mode = session.get('aif', None)
+    han_mode = session.get('han', None)
+
+
+    centra = Centrality()
     txt_df = sent_to_df(source_text)
     result = predict_topic(txt_df)
     hansard_fp = get_hansard_file_path('2020-05-24', result, 'HansardDataAMF')
@@ -240,3 +246,6 @@ def call_amf(chunks):
         #print('Got nodeset ' + str(map_id) )
     map_nums = [10672, 10670]
     return map_nums
+
+
+
