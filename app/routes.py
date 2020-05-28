@@ -49,16 +49,21 @@ def render_text():
     centra = Centrality()
 
     if aif_mode == "true" and han_mode == "true" and ex_aif_mode == "false":
+        # Source Map and Hansard
         print(source_text)
     elif aif_mode == "true" and han_mode == "false" and ex_aif_mode == "true":
+        # Source Map and External Map
         print(source_text)
         print(external_text)
     elif aif_mode == "false" and han_mode == "true" and ex_aif_mode == "false":
+        # Source Text and Hansard
         print(source_text)
     elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "false":
+        # Source Text and External Text
         print(source_text)
         print(external_text)
     elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "true":
+        # Source Text and External Map
         print(external_text)
 
 
