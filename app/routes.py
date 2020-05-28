@@ -8,8 +8,12 @@ import urllib
 import tempfile
 import os
 import uuid
+import nltk
+nltk.download('averaged_perceptron_tagger')
 from joblib import load
 from app.centrality import Centrality
+from app.SentenceSimilarity import SentenceSimilarity
+from fuzzywuzzy import fuzz
 
 
 @app.route('/')
@@ -21,13 +25,16 @@ def index():
 def index_post():
     aif_mode = 'false'
     han_mode = 'false'
+    ex_aif_mode = 'false'
     external_text = request.form['edata']
     source_text = request.form['sdata']
     aif_mode = request.form['aif_mode']
+    ex_aif_mode = request.form['ex_aif_mode']
     session['s_text'] = source_text
     session['e_text'] = external_text
     session['aif'] = aif_mode
     session['han'] = han_mode
+    session['e_aif'] = ex_aif_mode
 
     return redirect('/results')
 
@@ -38,15 +45,35 @@ def render_text():
     external_text = session.get('e_text', None)
     aif_mode = session.get('aif', None)
     han_mode = session.get('han', None)
-
-
+    ex_aif_mode = session.get('e_aif', None)
     centra = Centrality()
+
+    if aif_mode == "true" and han_mode == "true" and ex_aif_mode == "false":
+        print(source_text)
+    elif aif_mode == "true" and han_mode == "false" and ex_aif_mode == "true":
+        print(source_text)
+        print(external_text)
+    elif aif_mode == "false" and han_mode == "true" and ex_aif_mode == "false":
+        print(source_text)
+    elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "false":
+        print(source_text)
+        print(external_text)
+    elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "true":
+        print(external_text)
+
+
     txt_df = sent_to_df(source_text)
     result = predict_topic(txt_df)
     hansard_fp = get_hansard_file_path('2020-05-24', result, 'HansardDataAMF')
-    print(hansard_fp)
-    get_hansard_text(hansard_fp)
-    print(result)
+    hansard_text = get_hansard_text(hansard_fp)
+
+
+    a = 'A jewel is a precious stone used to decorate valuable things that you wear, such as rings or necklaces.'
+    b = 'A gem is a jewel or stone that is used in jewellery.'
+    similarity = get_similarity(a, b)
+    if similarity > 1:
+
+
     return render_template('results.html', source_text=source_text)
 
 def sent_to_df(txt):
@@ -104,9 +131,8 @@ def get_hansard_text(file_path):
 
     with app.open_resource(file_path) as text_file:
         text = text_file.read()
-    text = text.encode('utf-8')
-    print(text)
-    return ''
+    #text = text.encode('utf-8')
+    return text
 
 def text_to_lines(textData):
     fin_list = []
@@ -246,6 +272,37 @@ def call_amf(chunks):
         #print('Got nodeset ' + str(map_id) )
     map_nums = [10672, 10670]
     return map_nums
+
+
+def get_similarity(sent1, sent2):
+    sent_sim = SentenceSimilarity()
+    sent_sim.main(sent1, sent2)
+
+def get_fuzzy_similarity(sent1, sent2):
+    sim = fuzz.token_set_ratio(sent1,sent2)
+    if sim == 0:
+        return 0
+    else:
+        return sim/100
+
+def check_sim_thresholds(similarity, premise):
+    negation_list = ['no', 'not', 'none', 'no one', 'nobody', 'nothing', 'neither', 'nowhere', 'never', 'hardly', 'scarcely', 'barely', 'doesnt', 'isnt', 'wasnt', 'shouldnt', 'wouldnt', 'couldnt', 'wont', 'cant', 'dont']
+    if similarity > 0.8:
+        return 'MA'
+    if similarity > 0.4:
+        negation_flag = False
+        for neg in negation_list:
+            premise = premise.lower()
+            premise = premise.replace("'","")
+            if neg in premise:
+                negation_flag = True
+
+        if negation_flag:
+            return 'CA'
+        else:
+            return 'RA'
+
+
 
 
 
