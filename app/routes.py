@@ -26,7 +26,7 @@ import ast
 @application.route('/index')
 def index():
     return redirect('/home')
-@application.route('/form')
+@application.route('/home')
 def home_render():
     return render_template('home.html')
 
