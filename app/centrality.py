@@ -176,6 +176,7 @@ class Centrality:
 
             G = nx.compose(G,g1)
 
+        l_node_i_node = centra.get_loc_prop_pair(G)
         g = centra.remove_redundant_nodes(G)
         i_nodes = centra.get_eigen_centrality(g)
         sorted_nodes = centra.sort_by_centrality(i_nodes)
@@ -189,7 +190,7 @@ class Centrality:
         else:
             return all_nodes
 
-        return all_nodes[:int(round(ten_percent))]
+        return all_nodes[:int(round(ten_percent))], l_node_i_node
 
     @staticmethod
     def get_all_nodes_combined(node_list):
@@ -202,6 +203,7 @@ class Centrality:
 
             G = nx.compose(G,g1)
 
+        l_node_i_node = centra.get_loc_prop_pair(G)
         g = centra.remove_redundant_nodes(G)
         i_nodes = centra.get_eigen_centrality(g)
         sorted_nodes = centra.sort_by_centrality(i_nodes)
@@ -209,4 +211,4 @@ class Centrality:
         #ten_percent = 0.1 * len(i_nodes)
         #top_n = sorted_nodes[:int(ten_percent)]
 
-        return sorted_nodes
+        return sorted_nodes, l_node_i_node
