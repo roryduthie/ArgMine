@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    </head>
+    <body>
+        <header>
+            <h1>ArgMine</h1>
+        </header>
+        <form id="frm" method="POST">
+            <label for="sdata">Source Dataset:</label><br>
+            <label for="edata">External Dataset:</label><br>
+            <label for="aif_mode"> AIF Map Mode: </label>
+            <input type="checkbox" id="aif_mode" name="aif_mode" value="true">
+            <input type="hidden" id="aif_mode" name="aif_mode" value="false">
+            <label for="ex_aif_mode"> Externel Source AIF Map Mode: </label>
+            <input type="checkbox" id="ex_aif_mode" name="ex_aif_mode" value="true">
+            <input type="hidden" id="ex_aif_mode" name="ex_aif_mode" value="false">
+            <label for="han_mode"> Hansard ITC: </label>
+            <input type="checkbox" id="han_mode" name="han_mode" value="true">
+            <input type="hidden" id="han_mode" name="han_mode" value="false">
+            <input type="submit" value="Submit">
+	    </form>
+        <textarea rows="4" cols="50" name="sdata" form="frm">
+        </textarea>
+        <textarea rows="4" cols="50" name="edata" form="frm">
+        </textarea>
+    </body>
+</html>

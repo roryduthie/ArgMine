@@ -25,9 +25,12 @@ import ast
 @application.route('/')
 @application.route('/index')
 def index():
-    return render_template('index.html')
+    return redirect('/home')
+@application.route('/form')
+def home_render():
+    return render_template('home.html')
 
-@application.route('/index', methods=['POST'])
+@application.route('/home', methods=['POST'])
 def index_post():
     aif_mode = 'false'
     han_mode = 'false'
