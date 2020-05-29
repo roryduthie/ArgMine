@@ -103,7 +103,7 @@ class SentenceSimilarity:
         for synset in synsets1:
         # Get the similarity value of the most similar word in the other sentence
             vals = [synset.path_similarity(ss) if synset.path_similarity(ss) is not None else 0 for ss in synsets2]
-            best_score = max(vals)
+            best_score = max(vals,default=0)
 
         # Check that the similarity could have been computed
             if best_score is not None:
@@ -111,6 +111,8 @@ class SentenceSimilarity:
                 count += 1
 
     # Average the values
+        if count == 0:
+            return 0
         score /= count
         return score
 

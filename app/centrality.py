@@ -184,9 +184,12 @@ class Centrality:
         #top_n = sorted_nodes[:int(ten_percent)]
         all_nodes.extend(sorted_nodes)
 
-        ten_percent = 0.05 * len(all_nodes)
+        if len(all_nodes) > 10:
+            ten_percent = 0.05 * len(all_nodes)
+        else:
+            return all_nodes
 
-        return all_nodes[:int(ten_percent)]
+        return all_nodes[:int(round(ten_percent))]
 
     @staticmethod
     def get_all_nodes_combined(node_list):

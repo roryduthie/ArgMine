@@ -70,11 +70,13 @@ def render_text():
         s_map_numbers = do_amf_calls(source_text, False)
         print(s_map_numbers)
         central_nodes = centra.get_top_nodes_combined(s_map_numbers)
+
         source_topic_text = get_topic_text(central_nodes)
         txt_df = sent_to_df(source_topic_text)
         result = predict_topic(txt_df)
         print(source_topic_text, result)
         print('Got Hansard Topic')
+        print(central_nodes)
         hansard_fp = get_hansard_file_path('2020-05-24', result, 'HansardDataAMF')
         hansard_map_num = check_hansard_path(hansard_fp)
         print(hansard_map_num)
@@ -87,14 +89,18 @@ def render_text():
         else:
             print('Gettting previous Hansard Map')
             h_map_numbers = hansard_map_num
-            print(h_map_numbers)
-            h_map_numbers = ast.literal_eval(h_map_numbers)
 
+            h_map_numbers = ast.literal_eval(h_map_numbers)
 
         h_i_nodes = centra.get_all_nodes_combined(h_map_numbers)
 
+        #print(central_nodes, h_i_nodes)
+
         relations = itc_matrix(central_nodes, h_i_nodes)
-        print(relations)
+        if len(relations > 0):
+            #Build itc map
+            build_itc_map(relations)
+
 
 
 
@@ -416,6 +422,7 @@ def do_amf_calls(s_txt, test_flag):
 
 def itc_matrix(source_nodes, other_nodes):
     relations = []
+    print(other_nodes)
     for node in source_nodes:
         node_id = node[0]
         node_text = node[1]
@@ -462,7 +469,7 @@ def check_hansard_path(hansard_fp):
         if len(sel_df) < 1:
             return ['']
         else:
-
+            sel_df.reset_index(inplace=True)
             return sel_df['map_id'][0]
 def write_to_csv(map_numbers, hansard_fp):
     file_name = 'hansard_maps.csv'
@@ -477,6 +484,8 @@ def write_to_csv(map_numbers, hansard_fp):
         df = pd.DataFrame({'filename': hansard_fp, 'map_id': [map_numbers]})
         df.to_csv(file_name, mode='a', header=False)
         #create df and write
+def build_itc_map(relations):
+    return ''
 
 
 
