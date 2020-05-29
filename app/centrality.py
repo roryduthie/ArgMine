@@ -168,16 +168,17 @@ class Centrality:
     @staticmethod
     def get_top_nodes_combined(node_list):
         all_nodes = []
+        centra = Centrality()
         G = nx.DiGraph()
         for node in node_list:
             dir_path = 'http://www.aifdb.org/json/' + str(node)
-            g1 = get_graph_url(dir_path)
+            g1 = centra.get_graph_url(dir_path)
 
             G = nx.compose(G,g1)
 
-        g = remove_redundant_nodes(G)
-        i_nodes = get_eigen_centrality(g)
-        sorted_nodes = sort_by_centrality(i_nodes)
+        g = centra.remove_redundant_nodes(G)
+        i_nodes = centra.get_eigen_centrality(g)
+        sorted_nodes = centra.sort_by_centrality(i_nodes)
         #print(len(i_nodes))
         #ten_percent = 0.1 * len(i_nodes)
         #top_n = sorted_nodes[:int(ten_percent)]
@@ -186,3 +187,23 @@ class Centrality:
         ten_percent = 0.05 * len(all_nodes)
 
         return all_nodes[:int(ten_percent)]
+
+    @staticmethod
+    def get_all_nodes_combined(node_list):
+        all_nodes = []
+        G = nx.DiGraph()
+        centra = Centrality()
+        for node in node_list:
+            dir_path = 'http://www.aifdb.org/json/' + str(node)
+            g1 = centra.get_graph_url(dir_path)
+
+            G = nx.compose(G,g1)
+
+        g = centra.remove_redundant_nodes(G)
+        i_nodes = centra.get_eigen_centrality(g)
+        sorted_nodes = centra.sort_by_centrality(i_nodes)
+        #print(len(i_nodes))
+        #ten_percent = 0.1 * len(i_nodes)
+        #top_n = sorted_nodes[:int(ten_percent)]
+
+        return sorted_nodes
