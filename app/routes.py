@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, session, Markup
-from . import application
+from . import app
 import pandas as pd
 from urllib.request import urlopen
 import requests
@@ -22,24 +22,27 @@ import ast
 
 
 
-@application.route('/')
-@application.route('/index')
+@app.route('/')
+@app.route('/index')
 def index():
     return redirect('/home')
-@application.route('/home')
+@app.route('/home')
 def home_render():
     return render_template('home.html')
 
-@application.route('/home', methods=['POST'])
+@app.route('/home', methods=['POST'])
 def index_post():
     aif_mode = 'false'
     han_mode = 'false'
     ex_aif_mode = 'false'
+    s_date = ''
     external_text = request.form['edata']
     source_text = request.form['sdata']
     aif_mode = request.form['aif_mode']
     ex_aif_mode = request.form['ex_aif_mode']
     han_mode = request.form['han_mode']
+    s_date = request.formx['date']
+    session['s_date'] = s_date
     session['s_text'] = source_text
     session['e_text'] = external_text
     session['aif'] = aif_mode
@@ -49,48 +52,83 @@ def index_post():
     return redirect('/results')
 
 
-@application.route('/results')
+@app.route('/results')
 def render_text():
     source_text = session.get('s_text', None)
     external_text = session.get('e_text', None)
     aif_mode = session.get('aif', None)
     han_mode = session.get('han', None)
     ex_aif_mode = session.get('e_aif', None)
+    source_date = session.get('s_date', None)
     centra = Centrality()
-    print(aif_mode, han_mode, ex_aif_mode)
+
+
     if aif_mode == "true" and han_mode == "true" and ex_aif_mode == "false":
         # Source Map and Hansard
-        print(source_text)
 
+        sources = source_text.split(',')
+        source_maps = [int(i) for i in sources]
+        central_nodes = centra.get_top_nodes_combined(source_maps)
+
+        source_topic_text = get_topic_text(central_nodes)
+        txt_df = sent_to_df(source_topic_text)
+        result = predict_topic(txt_df)
+        hansard_fp = get_hansard_file_path(source_date, result, 'HansardDataAMF')
+        hansard_map_num = check_hansard_path(hansard_fp)
+        if hansard_map_num[0] == '':
+            hansard_text = get_hansard_text(hansard_fp)
+            hansard_text = hansard_text.decode("utf-8")
+            h_map_numbers = do_amf_calls(hansard_text, True)
+            write_to_csv(h_map_numbers, hansard_fp)
+        else:
+            h_map_numbers = hansard_map_num
+
+            h_map_numbers = ast.literal_eval(h_map_numbers)
+
+        h_i_nodes = centra.get_all_nodes_combined(h_map_numbers)
+
+        relations = itc_matrix(central_nodes, h_i_nodes)
+        if len(relations) > 0:
+            #Build itc map
+            build_itc_map(relations)
 
     elif aif_mode == "true" and han_mode == "false" and ex_aif_mode == "true":
-        # Source Map and External Map
-        print(source_text)
-        print(external_text)
+        # Source Map and External Maps
+
+        sources = source_text.split(',')
+        source_maps = [int(i) for i in sources]
+
+        external = external_text.split(',')
+        ex_maps = [int(i) for i in external]
+
+        central_nodes = centra.get_top_nodes_combined(source_maps)
+        ex_i_nodes = centra.get_all_nodes_combined(ex_maps)
+
+        relations = itc_matrix(central_nodes, ex_i_nodes)
+        if len(relations) > 0:
+            #Build itc map
+            build_itc_map(relations)
+
+
     elif aif_mode == "false" and han_mode == "true" and ex_aif_mode == "false":
         # Source Text and Hansard
-        print('Getting AMF CAlls')
         s_map_numbers = do_amf_calls(source_text, False)
-        print(s_map_numbers)
         central_nodes = centra.get_top_nodes_combined(s_map_numbers)
 
         source_topic_text = get_topic_text(central_nodes)
         txt_df = sent_to_df(source_topic_text)
         result = predict_topic(txt_df)
-        print(source_topic_text, result)
-        print('Got Hansard Topic')
-        print(central_nodes)
-        hansard_fp = get_hansard_file_path('2020-05-24', result, 'HansardDataAMF')
+        hansard_fp = get_hansard_file_path(source_date, result, 'HansardDataAMF')
         hansard_map_num = check_hansard_path(hansard_fp)
-        print(hansard_map_num)
+
         if hansard_map_num[0] == '':
             hansard_text = get_hansard_text(hansard_fp)
             hansard_text = hansard_text.decode("utf-8")
-            print('Calling Hansard AMF calls')
+
             h_map_numbers = do_amf_calls(hansard_text, True)
             write_to_csv(h_map_numbers, hansard_fp)
         else:
-            print('Gettting previous Hansard Map')
+
             h_map_numbers = hansard_map_num
 
             h_map_numbers = ast.literal_eval(h_map_numbers)
@@ -100,7 +138,7 @@ def render_text():
         #print(central_nodes, h_i_nodes)
 
         relations = itc_matrix(central_nodes, h_i_nodes)
-        if len(relations > 0):
+        if len(relations) > 0:
             #Build itc map
             build_itc_map(relations)
 
@@ -110,22 +148,35 @@ def render_text():
 
     elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "false":
         # Source Text and External Text
-        print(source_text)
-        print(external_text)
+
+        s_map_numbers = do_amf_calls(source_text, False)
+        central_nodes = centra.get_top_nodes_combined(s_map_numbers)
+
+        ex_map_numbers = do_amf_calls(external_text, False)
+        ex_i_nodes = centra.get_all_nodes_combined(ex_map_numbers)
+
+        relations = itc_matrix(central_nodes, ex_i_nodes)
+        if len(relations) > 0:
+            #Build itc map
+            build_itc_map(relations)
+
+
     elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "true":
         # Source Text and External Map
-        print(external_text)
+
+        s_map_numbers = do_amf_calls(source_text, False)
+        central_nodes = centra.get_top_nodes_combined(s_map_numbers)
+
+        external = external_text.split(',')
+        ex_maps = [int(i) for i in external]
+        ex_i_nodes = centra.get_all_nodes_combined(ex_maps)
 
 
+        relations = itc_matrix(central_nodes, ex_i_nodes)
+        if len(relations) > 0:
+            #Build itc map
+            build_itc_map(relations)
 
-
-
-    a = 'A jewel is a precious stone used to decorate valuable things that you wear, such as rings or necklaces.'
-    b = 'A gem is a jewel or stone that is used in jewellery.'
-    parsed_text = get_parsed_text(a)
-    similarity = get_similarity(a, b)
-    if similarity > 1 or similarity == 0:
-        similarity = get_fuzzy_similarity(a, b)
 
 
 
@@ -138,7 +189,7 @@ def sent_to_df(txt):
 
 def predict_topic(df):
     model_path = 'static/model/final_hansard_topic_model_seed.joblib'
-    with application.open_resource(model_path) as load_m:
+    with app.open_resource(model_path) as load_m:
         loaded_m = load(load_m)
     pred = loaded_m.predict(df['text'])
     result = pred[0]
@@ -146,7 +197,7 @@ def predict_topic(df):
 
 def get_hansard_file_path(input_date, topic, han_directory):
     files_list = []
-    for subdir, dirs, files in os.walk(os.path.join(application.static_folder, han_directory)):
+    for subdir, dirs, files in os.walk(os.path.join(app.static_folder, han_directory)):
         for file_name in files:
             if 'txt' in file_name:
                 full_path = subdir + '/' + file_name
@@ -183,7 +234,7 @@ def get_hansard_file_path(input_date, topic, han_directory):
 
 def get_hansard_text(file_path):
 
-    with application.open_resource(file_path) as text_file:
+    with app.open_resource(file_path) as text_file:
         text = text_file.read()
     #text = text.encode('utf-8')
     return text
@@ -328,7 +379,6 @@ def call_amf(chunks, test_flag):
     #    map_nums = [10670, 10671]
     #else:
     #    map_nums = [10672]
-    print(map_nums)
     return map_nums
 
 
@@ -403,6 +453,8 @@ def process_text(txt):
 
     if 'but' in txt:
         txt = txt.split('but')[0]
+    if 'because' in txt:
+        txt = txt.split('because')[0]
     # and? .? ,? because?
     return txt
 
@@ -419,13 +471,11 @@ def do_amf_calls(s_txt, test_flag):
     removetable = str.maketrans('', '', '@#%-;')
     out_list = [s.translate(removetable) for s in s_txt_lst]
     chunks = chunk_words(out_list)
-    print('Calling AMF')
     s_map_numbers = call_amf(chunks, test_flag)
     return s_map_numbers
 
 def itc_matrix(source_nodes, other_nodes):
     relations = []
-    print(other_nodes)
     for node in source_nodes:
         node_id = node[0]
         node_text = node[1]
@@ -435,8 +485,7 @@ def itc_matrix(source_nodes, other_nodes):
             ex_id = ex_nodes[0]
             ex_text = ex_nodes[1]
 
-            print('COMPARING: ')
-            print(node_text, ex_text)
+
             #node_parsed_text = get_parsed_text(node_text)
             #ex_parsed_text = get_parsed_text(ex_text)
             if ex_text == '' or node_text == '':
