@@ -8,7 +8,7 @@ from sklearn.svm import LinearSVC
 
 
 def get_par_stopwords(file_path):
-    with app.open_resource(file_path) as stop_file:
+    with application.open_resource(file_path) as stop_file:
         st = stop_file.read()
     st = st.strip()
     st = st.replace('\n', '')
