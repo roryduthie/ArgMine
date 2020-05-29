@@ -175,7 +175,7 @@ class Centrality:
             g1 = centra.get_graph_url(dir_path)
 
             G = nx.compose(G,g1)
-
+        l_nodes = centra.get_l_node_list(G)
         l_node_i_node = centra.get_loc_prop_pair(G)
         g = centra.remove_redundant_nodes(G)
         i_nodes = centra.get_eigen_centrality(g)
@@ -190,7 +190,7 @@ class Centrality:
         else:
             return all_nodes
 
-        return all_nodes[:int(round(ten_percent))], l_node_i_node
+        return all_nodes[:int(round(ten_percent))], l_node_i_node, l_nodes
 
     @staticmethod
     def get_all_nodes_combined(node_list):
@@ -202,7 +202,7 @@ class Centrality:
             g1 = centra.get_graph_url(dir_path)
 
             G = nx.compose(G,g1)
-
+        l_nodes = centra.get_l_node_list(G)
         l_node_i_node = centra.get_loc_prop_pair(G)
         g = centra.remove_redundant_nodes(G)
         i_nodes = centra.get_eigen_centrality(g)
@@ -211,4 +211,4 @@ class Centrality:
         #ten_percent = 0.1 * len(i_nodes)
         #top_n = sorted_nodes[:int(ten_percent)]
 
-        return sorted_nodes, l_node_i_node
+        return sorted_nodes, l_node_i_node, l_nodes

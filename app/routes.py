@@ -41,7 +41,7 @@ def index_post():
     aif_mode = request.form['aif_mode']
     ex_aif_mode = request.form['ex_aif_mode']
     han_mode = request.form['han_mode']
-    s_date = request.formx['date']
+    s_date = request.form['date']
     session['s_date'] = s_date
     session['s_text'] = source_text
     session['e_text'] = external_text
@@ -68,7 +68,7 @@ def render_text():
 
         sources = source_text.split(',')
         source_maps = [int(i) for i in sources]
-        central_nodes, s_l_i_nodes = centra.get_top_nodes_combined(source_maps)
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(source_maps)
 
         source_topic_text = get_topic_text(central_nodes)
         txt_df = sent_to_df(source_topic_text)
@@ -85,12 +85,12 @@ def render_text():
 
             h_map_numbers = ast.literal_eval(h_map_numbers)
 
-        h_i_nodes, h_l_i_nodes = centra.get_all_nodes_combined(h_map_numbers)
+        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(h_map_numbers)
 
         relations = itc_matrix(central_nodes, h_i_nodes)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, h_l_i_nodes)
+            build_itc_map(relations, s_l_i_nodes, h_l_i_nodes, s_l_nodes, h_l_nodes)
 
     elif aif_mode == "true" and han_mode == "false" and ex_aif_mode == "true":
         # Source Map and External Maps
@@ -101,19 +101,19 @@ def render_text():
         external = external_text.split(',')
         ex_maps = [int(i) for i in external]
 
-        central_nodes, s_l_i_nodes = centra.get_top_nodes_combined(source_maps)
-        ex_i_nodes, ex_l_i_nodes = centra.get_all_nodes_combined(ex_maps)
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(source_maps)
+        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_maps)
 
         relations = itc_matrix(central_nodes, ex_i_nodes)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes)
+            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
 
 
     elif aif_mode == "false" and han_mode == "true" and ex_aif_mode == "false":
         # Source Text and Hansard
         s_map_numbers = do_amf_calls(source_text, False)
-        central_nodes, s_l_i_nodes = centra.get_top_nodes_combined(s_map_numbers)
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
 
         source_topic_text = get_topic_text(central_nodes)
         txt_df = sent_to_df(source_topic_text)
@@ -133,14 +133,14 @@ def render_text():
 
             h_map_numbers = ast.literal_eval(h_map_numbers)
 
-        h_i_nodes, h_l_i_nodes = centra.get_all_nodes_combined(h_map_numbers)
+        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(h_map_numbers)
 
         #print(central_nodes, h_i_nodes)
 
         relations = itc_matrix(central_nodes, h_i_nodes)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, h_l_i_nodes)
+            build_itc_map(relations, s_l_i_nodes, h_l_i_nodes, s_l_nodes, h_l_nodes)
 
 
 
@@ -150,32 +150,32 @@ def render_text():
         # Source Text and External Text
 
         s_map_numbers = do_amf_calls(source_text, False)
-        central_nodes, s_l_i_nodes = centra.get_top_nodes_combined(s_map_numbers)
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
 
         ex_map_numbers = do_amf_calls(external_text, False)
-        ex_i_nodes, ex_l_i_nodes = centra.get_all_nodes_combined(ex_map_numbers)
+        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
 
         relations = itc_matrix(central_nodes, ex_i_nodes)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes)
+            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
 
 
     elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "true":
         # Source Text and External Map
 
         s_map_numbers = do_amf_calls(source_text, False)
-        central_nodes, s_l_i_nodes = centra.get_top_nodes_combined(s_map_numbers)
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
 
         external = external_text.split(',')
         ex_maps = [int(i) for i in external]
-        ex_i_nodes, ex_l_i_nodes = centra.get_all_nodes_combined(ex_maps)
+        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_maps)
 
 
         relations = itc_matrix(central_nodes, ex_i_nodes)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes)
+            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
 
 
 
@@ -535,8 +535,27 @@ def write_to_csv(map_numbers, hansard_fp):
     else:
         df = pd.DataFrame({'filename': hansard_fp, 'map_id': [map_numbers]})
         df.to_csv(file_name, mode='a', header=False)
-        #create df and write
-def build_itc_map(relations, source_l_i_list, ex_l_i_list):
+
+def get_l_node_text(i_node_id, lnode_inode_list, l_node_list){
+    for rel_tup in lnode_inode_list:
+        lnode_id = rel_tup[0]
+        inode_id = rel_tup[1]
+
+        if i_node_id == inode_id:
+            for tups in l_node_list:
+                l_id = tups[0]
+                if(l_id == lnode_id){
+                    ltext = tups[1]
+                    return l_id, ltext
+
+def build_itc_map(relations, source_l_i_list, ex_l_i_list, source_l_list, ex_l_list):
+    for rel_tups in relations:
+        s_i_id = rel_tups[0]
+        s_i_text = rel_tups[1]
+        ex_i_id = rel_tups[2]
+        ex_i_text = rel_tups[3]
+        rel = rel_tups[4]
+        # call get_l_node_text for each i_id to get L
     return ''
 
 
