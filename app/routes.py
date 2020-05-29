@@ -146,7 +146,7 @@ def predict_topic(df):
 
 def get_hansard_file_path(input_date, topic, han_directory):
     files_list = []
-    for subdir, dirs, files in os.walk(os.path.join(app.static_folder, han_directory)):
+    for subdir, dirs, files in os.walk(os.path.join(application.static_folder, han_directory)):
         for file_name in files:
             if 'txt' in file_name:
                 full_path = subdir + '/' + file_name
