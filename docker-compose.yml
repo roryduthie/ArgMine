@@ -5,4 +5,4 @@ services:
   container_name: argmine
   build: .
   ports:
-  - "8181:8100"
+  - "8100:8100"
