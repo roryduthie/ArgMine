@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, session, Markup
-from . import app
+from . import application
 import pandas as pd
 from urllib.request import urlopen
 import requests
@@ -23,15 +23,15 @@ from collections import defaultdict
 
 
 
-@app.route('/')
-@app.route('/index')
+@application.route('/')
+@application.route('/index')
 def index():
     return redirect('/home')
-@app.route('/home')
+@application.route('/home')
 def home_render():
     return render_template('home.html')
 
-@app.route('/home', methods=['POST'])
+@application.route('/home', methods=['POST'])
 def index_post():
     aif_mode = 'false'
     han_mode = 'false'
@@ -53,7 +53,7 @@ def index_post():
     return redirect('/results')
 
 
-@app.route('/results')
+@application.route('/results')
 def render_text():
     source_text = session.get('s_text', None)
     external_text = session.get('e_text', None)
@@ -237,7 +237,7 @@ def sent_to_df(txt):
 
 def predict_topic(df):
     model_path = 'static/model/final_hansard_topic_model_seed.joblib'
-    with app.open_resource(model_path) as load_m:
+    with application.open_resource(model_path) as load_m:
         loaded_m = load(load_m)
     pred = loaded_m.predict(df['text'])
     result = pred[0]
@@ -245,7 +245,7 @@ def predict_topic(df):
 
 def get_hansard_file_path(input_date, topic, han_directory):
     files_list = []
-    for subdir, dirs, files in os.walk(os.path.join(app.static_folder, han_directory)):
+    for subdir, dirs, files in os.walk(os.path.join(application.static_folder, han_directory)):
         for file_name in files:
             if 'txt' in file_name:
                 full_path = subdir + '/' + file_name
@@ -282,7 +282,7 @@ def get_hansard_file_path(input_date, topic, han_directory):
 
 def get_hansard_text(file_path):
 
-    with app.open_resource(file_path) as text_file:
+    with application.open_resource(file_path) as text_file:
         text = text_file.read()
     #text = text.encode('utf-8')
     return text
