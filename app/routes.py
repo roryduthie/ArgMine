@@ -71,8 +71,8 @@ def render_text():
         # Source Map and Hansard
 
         sources = source_text.split(',')
-        source_maps = [int(i) for i in sources]
-        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(source_maps)
+        s_map_numbers = [int(i) for i in sources]
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
 
         source_topic_text = get_topic_text(central_nodes)
         txt_df = sent_to_df(source_topic_text)
@@ -82,31 +82,33 @@ def render_text():
         if hansard_map_num[0] == '':
             hansard_text = get_hansard_text(hansard_fp)
             hansard_text = hansard_text.decode("utf-8")
-            h_map_numbers = do_amf_calls(hansard_text, True)
-            write_to_csv(h_map_numbers, hansard_fp)
+            ex_map_numbers = do_amf_calls(hansard_text, True)
+            write_to_csv(ex_map_numbers, hansard_fp)
         else:
-            h_map_numbers = hansard_map_num
+            ex_map_numbers = hansard_map_num
 
-            h_map_numbers = ast.literal_eval(h_map_numbers)
+            ex_map_numbers = ast.literal_eval(ex_map_numbers)
 
-        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(h_map_numbers)
+        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
 
         relations = itc_matrix(central_nodes, h_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
             #Build itc map
             map_id = build_itc_map(relations, s_l_i_nodes, h_l_i_nodes, s_l_nodes, h_l_nodes)
 
+
+
     elif aif_mode == "true" and han_mode == "false" and ex_aif_mode == "true":
         # Source Map and External Maps
 
         sources = source_text.split(',')
-        source_maps = [int(i) for i in sources]
+        s_map_numbers = [int(i) for i in sources]
 
         external = external_text.split(',')
-        ex_maps = [int(i) for i in external]
+        ex_map_numbers = [int(i) for i in external]
 
-        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(source_maps)
-        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_maps)
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
+        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
 
         relations = itc_matrix(central_nodes, ex_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
@@ -129,15 +131,15 @@ def render_text():
             hansard_text = get_hansard_text(hansard_fp)
             hansard_text = hansard_text.decode("utf-8")
 
-            h_map_numbers = do_amf_calls(hansard_text, True)
+            ex_map_numbers = do_amf_calls(hansard_text, True)
             write_to_csv(h_map_numbers, hansard_fp)
         else:
 
-            h_map_numbers = hansard_map_num
+            ex_map_numbers = hansard_map_num
 
-            h_map_numbers = ast.literal_eval(h_map_numbers)
+            ex_map_numbers = ast.literal_eval(ex_map_numbers)
 
-        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(h_map_numbers)
+        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
 
         #print(central_nodes, h_i_nodes)
 
@@ -172,8 +174,8 @@ def render_text():
         central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
 
         external = external_text.split(',')
-        ex_maps = [int(i) for i in external]
-        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_maps)
+        ex_map_numbers = [int(i) for i in external]
+        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
 
 
         relations = itc_matrix(central_nodes, ex_i_nodes, ma_thresh, ra_thresh)
@@ -183,8 +185,50 @@ def render_text():
 
 
 
+    new_map_numbers = get_new_map_nums(s_map_numbers)
+    if len(relations) > 0:
+        itc_map_number = get_new_itc_map(map_id)
+        itc_map_list = [itc_map_number]
+        itc_map_view_list = create_argview_links(itc_map_list)
+        itc_number = str(itc_map_view_list[0])
+        itc_relations = relations
+    else:
+        itc_number = 'No ITC relations found'
+        itc_relations = ['No ITC relations found']
 
-    return render_template('results.html', source_text=source_text)
+    source_map_numbers_links = create_argview_links(new_map_numbers)
+
+    ex_map_number_links = create_argview_links(ex_map_numbers)
+
+    return render_template('results.html', source_text=source_text, source_maps_links = source_map_numbers_links, ex_map_links = ex_map_number_links, itc_number=itc_number, itc_relations=itc_relations)
+
+
+def create_argview_links(map_numbers):
+    link_list = []
+    for nodeset in map_numbers:
+        link = 'http://www.aifdb.org/argview/' + str(nodeset)
+
+        link_list.append(link)
+
+    return link_list
+def get_new_itc_map(nodeset_id):
+    new_map_id = get_arg_schemes(nodeset_id)
+
+    if new_map_id == '':
+        return nodeset_id
+    else:
+        return new_map_id
+
+
+def get_new_map_nums(s_map_numbers):
+    new_maps = []
+    for nodeset in s_map_numbers:
+        new_map_id = get_arg_schemes(nodeset)
+        if new_map_id == '':
+            new_maps.append(nodeset)
+        else:
+            new_maps.append(new_map_id)
+    return new_maps
 
 def sent_to_df(txt):
     txt_pred = {'text': [txt]}
@@ -648,38 +692,93 @@ def build_itc_map(relations, source_l_i_list, ex_l_i_list, source_l_list, ex_l_l
     map_data = json.loads(map_response)
     map_id = map_data['nodeSetID']
 
-    print(map_id)
-
-
     return map_id
 
-def aif_itc_upload(url, aif_data):
-    aif_data = str(aif_data)
-    filename = uuid.uuid4().hex
-    filename = filename + '.json'
-    with open(filename,"w") as fo:
-        fo.write(aif_data)
-    files = {
-        'file': (filename, open(filename, 'rb')),
-    }
-    #get corpus ID
 
-    aif_response = requests.post(url, files=files, auth=('test', 'pass'))
-    #change this to pass the response back as text rather than as the full JSON output, this way we either pass back that a corpus was added to or a map uplaoded with map ID. Might be worth passing MAPID and Corpus name back in that situation.
-
-    #os.remove(filename)
-    return aif_response.text
-
-def get_arg_schemes(source_maps, itc_map):
+def get_arg_schemes(nodeset):
     cent = Centrality()
-    for nodeset in source_maps:
-        j_url = cent.create_json_url(nodeset,True)
-        graph = cent.get_graph_url(j_url)
 
-        ras = get_ras(graph)
-        ras_i_list = get_ra_i_nodes(graph, ras)
+    j_url = cent.create_json_url(str(nodeset),True)
+    graph = cent.get_graph_url(j_url)
+    json_data = get_json_string(j_url)
+
+    ras = cent.get_ras(graph)
+    ras_i_list = cent.get_ra_i_nodes(graph, ras)
+
+    ra_changes = []
+    for ns in ras_i_list:
+        ra_id = ns[0]
+        s_id = ns[1]
+        e_id = ns[2]
+
+        schemes = identifyScheme(e_id, s_id)
+
+        if len(schemes) < 1:
+            continue
+        else:
+            ra_tup = (ra_id, schemes[0])
+            ra_changes.append(ra_tup)
+            #get json string and replace text at ID then upload
+
+    print(ra_changes)
+    if len(ra_changes) < 1:
+        return ''
+    else:
+        n_json_data = replace_node(json_data, ra_changes)
+        url_aif = 'http://www.aifdb.org/json/'
+        jsn_data = json.dumps(n_json_data)
+        map_response = aif_upload(url_aif, jsn_data)
+        map_data = json.loads(map_response)
+        fin_map_id = map_data['nodeSetID']
 
 
+    return fin_map_id
 
 
+def get_json_string(node_path):
+    try:
+        jsn_string = requests.get(node_path).text
+        strng_ind = jsn_string.index('{')
+        n_string = jsn_string[strng_ind:]
+        dta = json.loads(n_string)
+    except(IOError):
+        print('File was not found:')
+        print(node_path)
+
+    return dta
+def replace_node(json_data, node_list):
+    #json_data_dict = json.loads(json_data)
+
+    for ns in node_list:
+        n_id = ns[0]
+        new_text = ns[1]
+        for nodes in json_data['nodes']:
+            json_n_id = nodes['nodeID']
+            if str(n_id) == str(json_n_id):
+                nodes['text'] = new_text
+
+    return json_data
+
+def identifyScheme(premise, conclusion):
+    identifiedSchemes = []
+
+    if (("similar" in premise or "generally" in premise) and ("be" in conclusion or "to be" in conclusion)):
+        identifiedSchemes.append("Analogy")
+
+    elif ("generally" in premise or "occur" in premise) or ("occur" in conclusion) :
+        identifiedSchemes.append("CauseToEffect")
+
+    elif("goal" in premise or "action" in premise) or ("ought" in conclusion or "perform" in conclusion) :
+        identifiedSchemes.append("PracticalReasoning")
+
+    elif(("all" in premise or "if" in premise) and ("be" in conclusion or "to be" in conclusion)) :
+        identifiedSchemes.append("VerbalClassification")
+
+    elif((("expert" in premise or "experience" in premise or "skill" in premise) and "said" in premise) and ("be" in conclusion or "to be" in conclusion)) :
+        identifiedSchemes.append("ExpertOpinion")
+
+    elif(("occur" in premise or "happen" in premise) and ("should" in conclusion or "must" in conclusion)) :
+        identifiedSchemes.append("PositiveConsequences")
+
+    return identifiedSchemes
 

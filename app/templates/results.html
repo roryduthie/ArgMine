@@ -3,13 +3,50 @@
 <head>
     <title>ArgMine</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/res.css') }}">
 
 </head>
 
 <body>
     <h1>ArgMine</h1>
-    <p> {{ source_text }}</p>
+
+    <div class="wrapper">
+
+
+    <div class="innerdivs">
+        <h3> Source Maps </h3>
+    {% for source in source_maps_links %}
+
+        <a href="{{ source }}">{{ source }}</a>
+    {% endfor %}
+    </div>
+
+    <br>
+
+    <div class="innerdivs">
+        <h3> Connection Maps </h3>
+        {% for ex in ex_map_links %}
+
+            <a href="{{ ex }}">{{ ex }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="innerdivs">
+        <h3> ITC </h3>
+        <a href="{{ itc_number }}">{{ itc_number }}</a>
+    </div>
+
+    </div>
+    <br>
+
+    <div class="rels">
+        <h3> ITC Relations </h3>
+        {% for rel in itc_relations %}
+
+            <p> {{rel}}</p>
+        {% endfor %}
+    </div>
+
 </body>
 
 </html>

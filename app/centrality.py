@@ -225,14 +225,16 @@ class Centrality:
         for ra in ras:
             node_succ = list(graph.successors(ra))
             i_1 = node_succ[0]
+            i_1_text = graph.nodes[i_1]['text']
             node_pres = list(graph.predecessors(ra))
 
             for n in node_pres:
                 n_type = graph.nodes[n]['type']
                 if n_type == 'I':
                     i_2 = n
+                    i_2_text = graph.nodes[i_2]['text']
                     break
 
-            ra_tup = (ra, i_1, i_2)
+            ra_tup = (ra, i_1_text, i_2_text)
             ra_tups.append(ra_tup)
         return ra_tups
