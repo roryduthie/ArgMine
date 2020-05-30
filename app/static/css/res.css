@@ -1,13 +1,10 @@
+
 html, body {
   margin: 0;
   padding: 0;
 }
 
 body{background-color: white;}
-
-h3{
-  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
-}
 
 header img{
     float: center;
@@ -26,6 +23,10 @@ header h1{
     background-color: mediumturquoise;
     padding-top: 15px;
     padding-right: 40px;
+}
+
+h3{
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
 }
 
 
@@ -88,3 +89,73 @@ header{
   box-shadow: inset 0px 2px 15px 0px rgba(0,0,0,0.75);
 
 }
+
+
+.textAreaColumn{
+	margin-top: 10%;
+	text-align:center;
+    height: 40%;
+    display:block;
+    margin: auto;
+
+
+    position: absolute;
+  	left:0;
+  	right: 0;
+  	top: 20%;
+
+
+
+  	width: 60%;
+
+  	-webkit-column-count: 2;
+  	column-count: 2;
+}
+.textAreaColumn div{
+    width:80%;
+    padding:10px;
+    box-sizing: border-box;
+}
+
+.textAreaColumn div textarea{
+    box-sizing: border-box;
+    width:100%;
+    min-height:150px;
+}
+
+.explain {
+	font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
+	margin: auto;
+	text-align:left;
+	margin-top: 1%;
+	width:50%;
+	height: 30%;
+	position:  relative;
+}
+div.form
+{
+	margin-top: 8%;
+    display: block;
+    text-align: center;
+}
+
+form {
+font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+
+}
+input{
+font-family: "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Helvetica, Arial, sans-serif;
+ margin-right:50px;
+}
+
+input[type=submit] {
+	margin-top: 15%;
+	position:  relative;
+	padding:5px 15px; background:#ccc; border:0 none;
+    cursor:pointer;
+    -webkit-border-radius: 5px;
+    border-radius: 5px; }

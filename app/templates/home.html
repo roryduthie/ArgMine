@@ -1,29 +1,54 @@
 <html>
     <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/res.css') }}">
     </head>
     <body>
         <header>
-            <h1>ArgMine</h1>
+            <img src="{{url_for('static', filename='img/argmine.png')}}" />
         </header>
+
+
+	    <div class="textAreaColumn">
+	    <div class="txta">
+	    <label for="sdata">Source Text</label><br>
+        <textarea rows="4" cols="50" name="sdata" form="frm"></textarea>
+        </div>
+        <div class="txtb">
+        <label for="edata">Other Text</label><br>
+        <textarea rows="4" cols="50" name="edata" form="frm"></textarea>
+
+        </div>
+        </div>
+        <div class="form">
         <form id="frm" method="POST">
-            <label for="sdata">Source Dataset:</label><br>
-            <label for="edata">External Dataset:</label><br>
-            <label for="aif_mode"> AIF Map Mode: </label>
+         <label for="aif_mode"> AIF Map Mode: </label>
             <input type="checkbox" id="aif_mode" name="aif_mode" value="true">
             <input type="hidden" id="aif_mode" name="aif_mode" value="false">
+            <label for="date"> Date of Source Text: </label>
             <input type="text" id="date" name="date" placeholder="2020-07-30">
-            <label for="ex_aif_mode"> Externel Source AIF Map Mode: </label>
+            <label for="ex_aif_mode"> Other AIF Map Mode: </label>
             <input type="checkbox" id="ex_aif_mode" name="ex_aif_mode" value="true">
             <input type="hidden" id="ex_aif_mode" name="ex_aif_mode" value="false">
             <label for="han_mode"> Hansard ITC: </label>
             <input type="checkbox" id="han_mode" name="han_mode" value="true">
             <input type="hidden" id="han_mode" name="han_mode" value="false">
-            <input type="submit" value="Submit">
-	    </form>
-        <textarea rows="4" cols="50" name="sdata" form="frm">
-        </textarea>
-        <textarea rows="4" cols="50" name="edata" form="frm">
-        </textarea>
+        	<input type="submit" value="Submit">
+        </form>
+        </div>
+        <div class="explain">
+        	<h3>Tool Options</h3>
+        	<p> 1. Input a new source text and a new other text. Each will be passed to the Argument Mining Framework. Text should be in this format (including line breaks): </p>
+        	<p> Speaker: Text text text.</p>
+        	<p> Speaker: Text text text.</p>
+
+        	<p>2. Input a new source text and compare with an existing argument map or set of argument maps for Intertextual Correspondence (ITC). This requires the Other AIF Map Mode checkbox to be checked. Map numbers should be given as: </p>
+        	<p> 10672,10673,10674 </p>
+
+        	<p>3. Input an existing argument map as source and get ITC connections with another existing source. Requires selecting both AIF map mode checkboxes.</p>
+
+        	<p>4. Input a new source text and get ITC connections with Hansard the UK parliamentary record. Only requires source text and the Hansard ITC selection. </p>
+
+        	<p>5. Input an existing source map and get ITC connections with Hansard the UK parliamentary record. Only requires source maps in comma separated list format and the Hansard ITC selection. </p>
+        </div>
     </body>
 </html>

@@ -8,7 +8,9 @@
 </head>
 
 <body>
-    <h1>ArgMine</h1>
+    <header>
+            <img src="{{url_for('static', filename='img/argmine.png')}}" />
+    </header>
 
     <div class="wrapper">
 
@@ -24,7 +26,7 @@
     <br>
 
     <div class="innerdivs">
-        <h3> Connection Maps </h3>
+        <h3> Other Maps </h3>
         {% for ex in ex_map_links %}
 
             <a href="{{ ex }}">{{ ex }}</a>

@@ -191,7 +191,7 @@ def render_text():
         itc_map_list = [itc_map_number]
         itc_map_view_list = create_argview_links(itc_map_list)
         itc_number = str(itc_map_view_list[0])
-        itc_relations = relations
+        itc_relations = [(rels[1], rels[3], rels[4] ) for rels in relations]
     else:
         itc_number = 'No ITC relations found'
         itc_relations = ['No ITC relations found']
