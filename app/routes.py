@@ -18,6 +18,7 @@ import spacy
 from copy import deepcopy
 import glob
 import ast
+from collections import defaultdict
 
 
 
@@ -62,6 +63,9 @@ def render_text():
     source_date = session.get('s_date', None)
     centra = Centrality()
 
+    ma_thresh = 0.85
+    ra_thresh = 0.55
+
 
     if aif_mode == "true" and han_mode == "true" and ex_aif_mode == "false":
         # Source Map and Hansard
@@ -87,10 +91,10 @@ def render_text():
 
         h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(h_map_numbers)
 
-        relations = itc_matrix(central_nodes, h_i_nodes)
+        relations = itc_matrix(central_nodes, h_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, h_l_i_nodes, s_l_nodes, h_l_nodes)
+            map_id = build_itc_map(relations, s_l_i_nodes, h_l_i_nodes, s_l_nodes, h_l_nodes)
 
     elif aif_mode == "true" and han_mode == "false" and ex_aif_mode == "true":
         # Source Map and External Maps
@@ -104,10 +108,10 @@ def render_text():
         central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(source_maps)
         ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_maps)
 
-        relations = itc_matrix(central_nodes, ex_i_nodes)
+        relations = itc_matrix(central_nodes, ex_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
+            map_id = build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
 
 
     elif aif_mode == "false" and han_mode == "true" and ex_aif_mode == "false":
@@ -137,10 +141,10 @@ def render_text():
 
         #print(central_nodes, h_i_nodes)
 
-        relations = itc_matrix(central_nodes, h_i_nodes)
+        relations = itc_matrix(central_nodes, h_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, h_l_i_nodes, s_l_nodes, h_l_nodes)
+            map_id = build_itc_map(relations, s_l_i_nodes, h_l_i_nodes, s_l_nodes, h_l_nodes)
 
 
 
@@ -155,10 +159,10 @@ def render_text():
         ex_map_numbers = do_amf_calls(external_text, False)
         ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
 
-        relations = itc_matrix(central_nodes, ex_i_nodes)
+        relations = itc_matrix(central_nodes, ex_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
+            map_id = build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
 
 
     elif aif_mode == "false" and han_mode == "false" and ex_aif_mode == "true":
@@ -172,10 +176,10 @@ def render_text():
         ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_maps)
 
 
-        relations = itc_matrix(central_nodes, ex_i_nodes)
+        relations = itc_matrix(central_nodes, ex_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
             #Build itc map
-            build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
+            map_id = build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
 
 
 
@@ -398,17 +402,24 @@ def get_alternate_wn_similarity(sent1, sent2):
     similarity = sent_sim.symmetric_sentence_similarity(sent1, sent2)
     return similarity
 
-def check_sim_thresholds(similarity, premise):
+def check_sim_thresholds(similarity, premise, conclusion, ma_thresh, ra_thresh):
     negation_list = ['no', 'not', 'none', 'no one', 'nobody', 'nothing', 'neither', 'nowhere', 'never', 'hardly', 'scarcely', 'barely', 'doesnt', 'isnt', 'wasnt', 'shouldnt', 'wouldnt', 'couldnt', 'wont', 'cant', 'dont']
-    if similarity > 0.8:
+    if similarity > ma_thresh:
         return 'MA'
-    if similarity > 0.6:
+    if similarity > ra_thresh:
         negation_flag = False
         for neg in negation_list:
             premise = premise.lower()
             premise = premise.replace("'","")
             if neg in premise:
                 negation_flag = True
+
+        node_t = conclusion.lower()
+        if 'xxx' in node_t or '/' in node_t:
+            return ''
+        node_p = premise.lower()
+        if 'xxx' in node_p or '/' in node_p:
+            return ''
 
         if negation_flag:
             return 'CA'
@@ -474,7 +485,7 @@ def do_amf_calls(s_txt, test_flag):
     s_map_numbers = call_amf(chunks, test_flag)
     return s_map_numbers
 
-def itc_matrix(source_nodes, other_nodes):
+def itc_matrix(source_nodes, other_nodes, ma_thresh, ra_thresh):
     relations = []
     for node in source_nodes:
         node_id = node[0]
@@ -484,7 +495,6 @@ def itc_matrix(source_nodes, other_nodes):
         for ex_nodes in other_nodes:
             ex_id = ex_nodes[0]
             ex_text = ex_nodes[1]
-
 
             #node_parsed_text = get_parsed_text(node_text)
             #ex_parsed_text = get_parsed_text(ex_text)
@@ -497,7 +507,7 @@ def itc_matrix(source_nodes, other_nodes):
                     similarity = get_alternate_wn_similarity(node_text, ex_text)
 
 
-                relation = check_sim_thresholds(similarity, ex_text)
+                relation = check_sim_thresholds(similarity, ex_text, node_text, ma_thresh, ra_thresh)
                 if relation == '':
                     continue
                 else:
@@ -536,7 +546,7 @@ def write_to_csv(map_numbers, hansard_fp):
         df = pd.DataFrame({'filename': hansard_fp, 'map_id': [map_numbers]})
         df.to_csv(file_name, mode='a', header=False)
 
-def get_l_node_text(i_node_id, lnode_inode_list, l_node_list){
+def get_l_node_text(i_node_id, lnode_inode_list, l_node_list):
     for rel_tup in lnode_inode_list:
         lnode_id = rel_tup[0]
         inode_id = rel_tup[1]
@@ -544,19 +554,131 @@ def get_l_node_text(i_node_id, lnode_inode_list, l_node_list){
         if i_node_id == inode_id:
             for tups in l_node_list:
                 l_id = tups[0]
-                if(l_id == lnode_id){
+                if l_id == lnode_id:
                     ltext = tups[1]
                     return l_id, ltext
+def build_itc_json(relations):
+    node_list = []
+    edge_list = []
+    loc_list = []
+
+    json_aif_dict = defaultdict(list)
+
+    for i,rel in enumerate(relations):
+        node_id = i + 1
+
+        source_i_n = {"nodeID": "si" + str(node_id), "text": rel[0], "type": "I"}
+        source_l_n = {"nodeID": "sl" + str(node_id), "text": rel[1], "type": "L"}
+        ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[2], "type": "I"}
+        ex_l_n = {"nodeID": "el" + str(node_id), "text": rel[3], "type": "L"}
+        s_n = {"nodeID": "s" + str(node_id), "text": rel[5], "type": rel[4]}
+        ya_n = {"nodeID": "ya" + str(node_id), "text": rel[6], "type": "YA"}
+        ta_n = {"nodeID": "ta" + str(node_id), "text": "Default Transition", "type": "TA"}
+
+        node_list.append(source_i_n)
+        node_list.append(source_l_n)
+        node_list.append(ex_i_n)
+        node_list.append(ex_l_n)
+        node_list.append(s_n)
+        node_list.append(ya_n)
+        node_list.append(ta_n)
+
+
+        edge_1 = {"edgeID":"e" + str(node_id), "fromID":"el" + str(node_id), "toID":"ta" + str(node_id)}
+        edge_2 = {"edgeID":"ee" + str(node_id), "fromID":"ta" + str(node_id), "toID":"sl" + str(node_id)}
+        edge_3 = {"edgeID":"eee" + str(node_id), "fromID":"ta" + str(node_id), "toID":"ya" + str(node_id)}
+        edge_4 = {"edgeID":"eeee" + str(node_id), "fromID":"ya" + str(node_id), "toID":"s" + str(node_id)}
+        edge_5 = {"edgeID":"eeeee" + str(node_id), "fromID":"ei" + str(node_id), "toID":"s" + str(node_id)}
+        edge_6 = {"edgeID":"eeeeee" + str(node_id), "fromID":"s" + str(node_id), "toID":"si" + str(node_id)}
+
+        edge_list.append(edge_1)
+        edge_list.append(edge_2)
+        edge_list.append(edge_3)
+        edge_list.append(edge_4)
+        edge_list.append(edge_5)
+        edge_list.append(edge_6)
+
+    json_aif_dict["nodes"].extend(node_list)
+    json_aif_dict["edges"].extend(edge_list)
+    json_aif_dict["locutions"].extend(loc_list)
+
+
+    aif_json = json.dumps(json_aif_dict)
+    return aif_json
 
 def build_itc_map(relations, source_l_i_list, ex_l_i_list, source_l_list, ex_l_list):
+    map_rels = []
     for rel_tups in relations:
         s_i_id = rel_tups[0]
         s_i_text = rel_tups[1]
         ex_i_id = rel_tups[2]
         ex_i_text = rel_tups[3]
         rel = rel_tups[4]
+        ya = ''
+        scheme_text = ''
         # call get_l_node_text for each i_id to get L
-    return ''
+
+        source_l = get_l_node_text(s_i_id, source_l_i_list, source_l_list)
+        ex_l = get_l_node_text(ex_i_id, ex_l_i_list, ex_l_list)
+
+
+        s_l_id = source_l[0]
+        s_l_text = source_l[1]
+
+        ex_l_id = ex_l[0]
+        ex_l_text = ex_l[1]
+
+
+        if rel == 'MA':
+            ya = 'Restating'
+            scheme_text = 'Default Rephrase'
+        elif rel == 'RA':
+            ya = 'Arguing'
+            scheme_text = 'Default Inference'
+        elif rel == 'CA':
+            ya = 'Disagreeing'
+            scheme_text = 'Default Conflict'
+
+        rel_tuple = (s_i_text, s_l_text, ex_i_text, ex_l_text, rel, scheme_text, ya)
+        map_rels.append(rel_tuple)
+
+    aif_json = build_itc_json(map_rels)
+    url_aif = 'http://www.aifdb.org/json/'
+    map_response = aif_upload(url_aif, aif_json)
+    map_data = json.loads(map_response)
+    map_id = map_data['nodeSetID']
+
+    print(map_id)
+
+
+    return map_id
+
+def aif_itc_upload(url, aif_data):
+    aif_data = str(aif_data)
+    filename = uuid.uuid4().hex
+    filename = filename + '.json'
+    with open(filename,"w") as fo:
+        fo.write(aif_data)
+    files = {
+        'file': (filename, open(filename, 'rb')),
+    }
+    #get corpus ID
+
+    aif_response = requests.post(url, files=files, auth=('test', 'pass'))
+    #change this to pass the response back as text rather than as the full JSON output, this way we either pass back that a corpus was added to or a map uplaoded with map ID. Might be worth passing MAPID and Corpus name back in that situation.
+
+    #os.remove(filename)
+    return aif_response.text
+
+def get_arg_schemes(source_maps, itc_map):
+    cent = Centrality()
+    for nodeset in source_maps:
+        j_url = cent.create_json_url(nodeset,True)
+        graph = cent.get_graph_url(j_url)
+
+        ras = get_ras(graph)
+        ras_i_list = get_ra_i_nodes(graph, ras)
+
 
 
 

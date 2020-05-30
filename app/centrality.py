@@ -57,7 +57,6 @@ class Centrality:
     @staticmethod
     def get_graph_url(node_path):
         corpus_loader = CorpusLoader()
-        print(node_path)
         try:
             jsn_string = requests.get(node_path).text
             strng_ind = jsn_string.index('{')
@@ -175,6 +174,7 @@ class Centrality:
             g1 = centra.get_graph_url(dir_path)
 
             G = nx.compose(G,g1)
+        G = centra.remove_iso_nodes(G)
         l_nodes = centra.get_l_node_list(G)
         l_node_i_node = centra.get_loc_prop_pair(G)
         g = centra.remove_redundant_nodes(G)
@@ -188,7 +188,7 @@ class Centrality:
         if len(all_nodes) > 10:
             ten_percent = 0.05 * len(all_nodes)
         else:
-            return all_nodes
+            return all_nodes, l_node_i_node, l_nodes
 
         return all_nodes[:int(round(ten_percent))], l_node_i_node, l_nodes
 
@@ -202,6 +202,7 @@ class Centrality:
             g1 = centra.get_graph_url(dir_path)
 
             G = nx.compose(G,g1)
+        G = centra.remove_iso_nodes(G)
         l_nodes = centra.get_l_node_list(G)
         l_node_i_node = centra.get_loc_prop_pair(G)
         g = centra.remove_redundant_nodes(G)
@@ -212,3 +213,26 @@ class Centrality:
         #top_n = sorted_nodes[:int(ten_percent)]
 
         return sorted_nodes, l_node_i_node, l_nodes
+
+    @staticmethod
+    def get_ras(graph):
+        ra_nodes =  [x for x,y in graph.nodes(data=True) if y['type']=='RA']
+        return ra_nodes
+
+    @staticmethod
+    def get_ra_i_nodes(graph, ras):
+        ra_tups = []
+        for ra in ras:
+            node_succ = list(graph.successors(ra))
+            i_1 = node_succ[0]
+            node_pres = list(graph.predecessors(ra))
+
+            for n in node_pres:
+                n_type = graph.nodes[n]['type']
+                if n_type == 'I':
+                    i_2 = n
+                    break
+
+            ra_tup = (ra, i_1, i_2)
+            ra_tups.append(ra_tup)
+        return ra_tups
