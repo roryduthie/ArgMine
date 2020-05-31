@@ -66,8 +66,12 @@ def render_text():
     ex_map_numbers = []
     ma_thresh = 0.85
     ra_thresh = 0.55
-    s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes = []
-    h_l_i_nodes, h_l_nodes = []
+    s_l_i_nodes = []
+    ex_l_i_nodes = []
+    s_l_nodes = []
+    ex_l_nodes = []
+    h_l_i_nodes = []
+    h_l_nodes = []
 
     if aif_mode == "true" and han_mode == "true" and ex_aif_mode == "false":
         # Source Map and Hansard
