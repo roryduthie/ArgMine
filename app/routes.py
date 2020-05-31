@@ -209,6 +209,8 @@ def render_text():
 
     new_map_numbers = get_new_map_nums(s_map_numbers)
     if len(relations) > 0:
+        print(map_id)
+        print(relations)
         itc_map_number = get_new_itc_map(map_id)
         itc_map_list = [itc_map_number]
         itc_map_view_list = create_argview_links(itc_map_list)
@@ -666,7 +668,7 @@ def build_itc_json(relations, aif_flags):
         else:
             source_i_n = {"nodeID": "si" + str(node_id), "text": rel[0], "type": "I"}
             ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[1], "type": "I"}
-            s_n = {"nodeID": "s" + str(node_id), "text": rel[2], "type": rel[3]}
+            s_n = {"nodeID": "s" + str(node_id), "text": rel[3], "type": rel[2]}
 
             node_list.append(source_i_n)
             node_list.append(ex_i_n)
@@ -704,7 +706,7 @@ def build_itc_map(relations, source_l_i_list, ex_l_i_list, source_l_list, ex_l_l
         ya = ''
         scheme_text = ''
         # call get_l_node_text for each i_id to get L
-
+        print(aif_flags)
         if not aif_flags:
             source_l = get_l_node_text(s_i_id, source_l_i_list, source_l_list)
             ex_l = get_l_node_text(ex_i_id, ex_l_i_list, ex_l_list)
