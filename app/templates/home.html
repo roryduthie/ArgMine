@@ -1,6 +1,14 @@
 <html>
     <head>
         <link rel="stylesheet" href="{{ url_for('static', filename='css/res.css') }}">
+        <script type="text/javascript">
+            function showHide() {
+                var div = document.getElementById("explain");
+                console.log('Showing');
+                div.innerHTML = "<h1>Processing Results, Please Wait...<h1/> ";
+                div.innerHTML += "</br> <div></div>"
+        }
+</script>
     </head>
     <body>
         <header>
@@ -20,7 +28,7 @@
         </div>
         </div>
         <div class="form">
-        <form id="frm" method="POST">
+        <form id="frm" method="POST" onsubmit="showHide(); return false;">
          <label for="aif_mode"> AIF Map Mode: </label>
             <input type="checkbox" id="aif_mode" name="aif_mode" value="true">
             <input type="hidden" id="aif_mode" name="aif_mode" value="false">
@@ -32,7 +40,7 @@
             <label for="han_mode"> Hansard ITC: </label>
             <input type="checkbox" id="han_mode" name="han_mode" value="true">
             <input type="hidden" id="han_mode" name="han_mode" value="false">
-        	<input type="submit" value="Submit">
+        	<input type="submit" value="Submit"/>
         </form>
         </div>
         <div class="explain">
