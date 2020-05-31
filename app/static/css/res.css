@@ -94,7 +94,7 @@ header{
 .textAreaColumn{
 	margin-top: 10%;
 	text-align:center;
-    height: 40%;
+    height: 30%;
     display:block;
     margin: auto;
 
@@ -134,7 +134,7 @@ header{
 }
 div.form
 {
-	margin-top: 8%;
+	margin-top: 15%;
     display: block;
     text-align: center;
 }
