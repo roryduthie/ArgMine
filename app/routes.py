@@ -665,8 +665,8 @@ def build_itc_json(relations, aif_flags):
             edge_list.append(edge_6)
         else:
             source_i_n = {"nodeID": "si" + str(node_id), "text": rel[0], "type": "I"}
-            ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[2], "type": "I"}
-            s_n = {"nodeID": "s" + str(node_id), "text": rel[5], "type": rel[4]}
+            ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[1], "type": "I"}
+            s_n = {"nodeID": "s" + str(node_id), "text": rel[2], "type": rel[3]}
 
             node_list.append(source_i_n)
             node_list.append(ex_i_n)
