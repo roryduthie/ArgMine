@@ -66,7 +66,8 @@ def render_text():
     ex_map_numbers = []
     ma_thresh = 0.85
     ra_thresh = 0.55
-
+    s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes = []
+    h_l_i_nodes, h_l_nodes = []
 
     if aif_mode == "true" and han_mode == "true" and ex_aif_mode == "false":
         # Source Map and Hansard
@@ -157,6 +158,22 @@ def render_text():
         # Source Text and External Text
 
         s_map_numbers = do_amf_calls(source_text, False)
+        central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
+
+        ex_map_numbers = do_amf_calls(external_text, False)
+        ex_i_nodes, ex_l_i_nodes, ex_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
+
+        relations = itc_matrix(central_nodes, ex_i_nodes, ma_thresh, ra_thresh)
+        if len(relations) > 0:
+            #Build itc map
+            map_id = build_itc_map(relations, s_l_i_nodes, ex_l_i_nodes, s_l_nodes, ex_l_nodes)
+
+    elif aif_mode == "true" and han_mode == "false" and ex_aif_mode == "false":
+        # Source Text and External Text
+
+        sources = source_text.split(',')
+        s_map_numbers = [int(i) for i in sources]
+
         central_nodes, s_l_i_nodes, s_l_nodes = centra.get_top_nodes_combined(s_map_numbers)
 
         ex_map_numbers = do_amf_calls(external_text, False)
@@ -602,7 +619,7 @@ def get_l_node_text(i_node_id, lnode_inode_list, l_node_list):
                 if l_id == lnode_id:
                     ltext = tups[1]
                     return l_id, ltext
-def build_itc_json(relations):
+def build_itc_json(relations, aif_flags):
     node_list = []
     edge_list = []
     loc_list = []
@@ -611,37 +628,55 @@ def build_itc_json(relations):
 
     for i,rel in enumerate(relations):
         node_id = i + 1
+        if not aif_flags:
+            source_i_n = {"nodeID": "si" + str(node_id), "text": rel[0], "type": "I"}
+            source_l_n = {"nodeID": "sl" + str(node_id), "text": rel[1], "type": "L"}
+            ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[2], "type": "I"}
+            ex_l_n = {"nodeID": "el" + str(node_id), "text": rel[3], "type": "L"}
+            s_n = {"nodeID": "s" + str(node_id), "text": rel[5], "type": rel[4]}
+            ya_n = {"nodeID": "ya" + str(node_id), "text": rel[6], "type": "YA"}
+            ta_n = {"nodeID": "ta" + str(node_id), "text": "Default Transition", "type": "TA"}
 
-        source_i_n = {"nodeID": "si" + str(node_id), "text": rel[0], "type": "I"}
-        source_l_n = {"nodeID": "sl" + str(node_id), "text": rel[1], "type": "L"}
-        ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[2], "type": "I"}
-        ex_l_n = {"nodeID": "el" + str(node_id), "text": rel[3], "type": "L"}
-        s_n = {"nodeID": "s" + str(node_id), "text": rel[5], "type": rel[4]}
-        ya_n = {"nodeID": "ya" + str(node_id), "text": rel[6], "type": "YA"}
-        ta_n = {"nodeID": "ta" + str(node_id), "text": "Default Transition", "type": "TA"}
-
-        node_list.append(source_i_n)
-        node_list.append(source_l_n)
-        node_list.append(ex_i_n)
-        node_list.append(ex_l_n)
-        node_list.append(s_n)
-        node_list.append(ya_n)
-        node_list.append(ta_n)
+            node_list.append(source_i_n)
+            node_list.append(source_l_n)
+            node_list.append(ex_i_n)
+            node_list.append(ex_l_n)
+            node_list.append(s_n)
+            node_list.append(ya_n)
+            node_list.append(ta_n)
 
 
-        edge_1 = {"edgeID":"e" + str(node_id), "fromID":"el" + str(node_id), "toID":"ta" + str(node_id)}
-        edge_2 = {"edgeID":"ee" + str(node_id), "fromID":"ta" + str(node_id), "toID":"sl" + str(node_id)}
-        edge_3 = {"edgeID":"eee" + str(node_id), "fromID":"ta" + str(node_id), "toID":"ya" + str(node_id)}
-        edge_4 = {"edgeID":"eeee" + str(node_id), "fromID":"ya" + str(node_id), "toID":"s" + str(node_id)}
-        edge_5 = {"edgeID":"eeeee" + str(node_id), "fromID":"ei" + str(node_id), "toID":"s" + str(node_id)}
-        edge_6 = {"edgeID":"eeeeee" + str(node_id), "fromID":"s" + str(node_id), "toID":"si" + str(node_id)}
+            edge_1 = {"edgeID":"e" + str(node_id), "fromID":"el" + str(node_id), "toID":"ta" + str(node_id)}
+            edge_2 = {"edgeID":"ee" + str(node_id), "fromID":"ta" + str(node_id), "toID":"sl" + str(node_id)}
+            edge_3 = {"edgeID":"eee" + str(node_id), "fromID":"ta" + str(node_id), "toID":"ya" + str(node_id)}
+            edge_4 = {"edgeID":"eeee" + str(node_id), "fromID":"ya" + str(node_id), "toID":"s" + str(node_id)}
+            edge_5 = {"edgeID":"eeeee" + str(node_id), "fromID":"ei" + str(node_id), "toID":"s" + str(node_id)}
+            edge_6 = {"edgeID":"eeeeee" + str(node_id), "fromID":"s" + str(node_id), "toID":"si" + str(node_id)}
 
-        edge_list.append(edge_1)
-        edge_list.append(edge_2)
-        edge_list.append(edge_3)
-        edge_list.append(edge_4)
-        edge_list.append(edge_5)
-        edge_list.append(edge_6)
+            edge_list.append(edge_1)
+            edge_list.append(edge_2)
+            edge_list.append(edge_3)
+            edge_list.append(edge_4)
+            edge_list.append(edge_5)
+            edge_list.append(edge_6)
+        else:
+            source_i_n = {"nodeID": "si" + str(node_id), "text": rel[0], "type": "I"}
+            ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[2], "type": "I"}
+            s_n = {"nodeID": "s" + str(node_id), "text": rel[5], "type": rel[4]}
+
+            node_list.append(source_i_n)
+            node_list.append(ex_i_n)
+            node_list.append(s_n)
+
+
+            edge_5 = {"edgeID":"eeeee" + str(node_id), "fromID":"ei" + str(node_id), "toID":"s" + str(node_id)}
+            edge_6 = {"edgeID":"eeeeee" + str(node_id), "fromID":"s" + str(node_id), "toID":"si" + str(node_id)}
+
+            edge_list.append(edge_5)
+            edge_list.append(edge_6)
+
+
+
 
     json_aif_dict["nodes"].extend(node_list)
     json_aif_dict["edges"].extend(edge_list)
@@ -653,6 +688,9 @@ def build_itc_json(relations):
 
 def build_itc_map(relations, source_l_i_list, ex_l_i_list, source_l_list, ex_l_list):
     map_rels = []
+    aif_flags = False
+    if not source_l_i_list or not ex_l_i_list or not source_l_list or not ex_l_list:
+        aif_flags = True
     for rel_tups in relations:
         s_i_id = rel_tups[0]
         s_i_text = rel_tups[1]
@@ -663,15 +701,16 @@ def build_itc_map(relations, source_l_i_list, ex_l_i_list, source_l_list, ex_l_l
         scheme_text = ''
         # call get_l_node_text for each i_id to get L
 
-        source_l = get_l_node_text(s_i_id, source_l_i_list, source_l_list)
-        ex_l = get_l_node_text(ex_i_id, ex_l_i_list, ex_l_list)
+        if not aif_flags:
+            source_l = get_l_node_text(s_i_id, source_l_i_list, source_l_list)
+            ex_l = get_l_node_text(ex_i_id, ex_l_i_list, ex_l_list)
 
 
-        s_l_id = source_l[0]
-        s_l_text = source_l[1]
+            s_l_id = source_l[0]
+            s_l_text = source_l[1]
 
-        ex_l_id = ex_l[0]
-        ex_l_text = ex_l[1]
+            ex_l_id = ex_l[0]
+            ex_l_text = ex_l[1]
 
 
         if rel == 'MA':
@@ -684,10 +723,15 @@ def build_itc_map(relations, source_l_i_list, ex_l_i_list, source_l_list, ex_l_l
             ya = 'Disagreeing'
             scheme_text = 'Default Conflict'
 
-        rel_tuple = (s_i_text, s_l_text, ex_i_text, ex_l_text, rel, scheme_text, ya)
-        map_rels.append(rel_tuple)
+        if not aif_flags:
 
-    aif_json = build_itc_json(map_rels)
+            rel_tuple = (s_i_text, s_l_text, ex_i_text, ex_l_text, rel, scheme_text, ya)
+            map_rels.append(rel_tuple)
+        else:
+            rel_tuple = (s_i_text, ex_i_text, rel, scheme_text)
+            map_rels.append(rel_tuple)
+
+    aif_json = build_itc_json(map_rels, aif_flags)
     url_aif = 'http://www.aifdb.org/json/'
     map_response = aif_upload(url_aif, aif_json)
     map_data = json.loads(map_response)
