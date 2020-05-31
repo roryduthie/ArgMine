@@ -4,9 +4,11 @@
         <script type="text/javascript">
             function showHide() {
                 var div = document.getElementById("explain");
+                var frm = document.getElementById("frm");
                 console.log('Showing');
                 div.innerHTML = "<h1>Processing Results, Please Wait...<h1/> ";
                 div.innerHTML += "</br> <div></div>"
+                frm.submit();
         }
 </script>
     </head>
@@ -28,7 +30,7 @@
         </div>
         </div>
         <div class="form">
-        <form id="frm" method="POST">
+        <form id="frm" method="POST" onsubmit="showHide(); return false;">
          <label for="aif_mode"> AIF Map Mode: </label>
             <input type="checkbox" id="aif_mode" name="aif_mode" value="true">
             <input type="hidden" id="aif_mode" name="aif_mode" value="false">
@@ -40,7 +42,7 @@
             <label for="han_mode"> Hansard ITC: </label>
             <input type="checkbox" id="han_mode" name="han_mode" value="true">
             <input type="hidden" id="han_mode" name="han_mode" value="false">
-        	<input type="submit" value="Submit" onclick="showHide(); return false;"/>
+        	<input type="submit" value="Submit"/>
         </form>
         </div>
         <div id="explain" class="explain">
