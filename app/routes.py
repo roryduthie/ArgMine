@@ -666,7 +666,7 @@ def build_itc_json(relations, aif_flags):
         else:
             source_i_n = {"nodeID": "si" + str(node_id), "text": rel[0], "type": "I"}
             ex_i_n = {"nodeID": "ei" + str(node_id), "text": rel[1], "type": "I"}
-            s_n = {"nodeID": "s" + str(node_id), "text": rel[2], "type": rel[3]}
+            s_n = {"nodeID": "s" + str(node_id), "text": rel[3], "type": rel[2]}
 
             node_list.append(source_i_n)
             node_list.append(ex_i_n)
