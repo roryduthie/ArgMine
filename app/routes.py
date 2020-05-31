@@ -62,7 +62,8 @@ def render_text():
     ex_aif_mode = session.get('e_aif', None)
     source_date = session.get('s_date', None)
     centra = Centrality()
-
+    s_map_numbers = []
+    ex_map_numbers = []
     ma_thresh = 0.85
     ra_thresh = 0.55
 
