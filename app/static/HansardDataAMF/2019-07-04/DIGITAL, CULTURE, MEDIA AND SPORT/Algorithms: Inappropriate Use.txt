@@ -1,8 +1,0 @@
-Chi Onwurah: What steps he is taking to tackle the potential inappropriate use of algorithms in the (a) public and (b) private sector. 
-
-Jeremy Wright: We have asked the Centre for Data Ethics and Innovation to review the potential for bias in the use of algorithms, and it is considering usage in both the public and private sectors on crime and justice, financial services, recruitment and local government. The centre will publish an interim report later this month, and it will make recommendations to the Government early next year. We will then decide how to proceed.
-
-Chi Onwurah: The past 10 years have seen the most revolutionary and rapid changes in how technology is used in public services, politics, work and leisure, yet the Government have had to be dragged kicking and screaming to implement the most basic digital protections, and they are behind even Google and Facebook in calling for regulation. The Secretary of State talks about another review, but algorithmic bias is a threat to all our citizens in the form of algorithmic rule. Will he take the opportunity to get on the front foot and put in place regulations to protect our citizens?
-
-Jeremy Wright: We are on the front foot, and the hon. Lady’s characterisation is entirely wrong. The world looks to the UK as a leader in this field. I talk to counterparts across the world about the Centre for Data Ethics and Innovation, and they are interested in a move that we are making that no one else has yet made. As the hon. Lady knows—she has looked carefully at this issue—the online harms White Paper will deal with a range of issues and produce regulation that is, once again, world leading.
-
