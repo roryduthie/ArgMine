@@ -138,7 +138,7 @@ def render_text():
             hansard_text = hansard_text.decode("utf-8")
 
             ex_map_numbers = do_amf_calls(hansard_text, True)
-            write_to_csv(h_map_numbers, hansard_fp)
+            write_to_csv(ex_map_numbers, hansard_fp)
         else:
 
             ex_map_numbers = hansard_map_num
