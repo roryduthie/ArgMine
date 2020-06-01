@@ -95,7 +95,7 @@ def render_text():
 
             ex_map_numbers = ast.literal_eval(ex_map_numbers)
 
-        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
+        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_top_nodes_combined(ex_map_numbers)
 
         relations = itc_matrix(central_nodes, h_i_nodes, ma_thresh, ra_thresh)
         if len(relations) > 0:
@@ -145,7 +145,7 @@ def render_text():
 
             ex_map_numbers = ast.literal_eval(ex_map_numbers)
 
-        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_all_nodes_combined(ex_map_numbers)
+        h_i_nodes, h_l_i_nodes, h_l_nodes = centra.get_top_nodes_combined(ex_map_numbers)
 
         #print(central_nodes, h_i_nodes)
 
