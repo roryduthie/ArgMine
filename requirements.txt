@@ -1,7 +1,7 @@
 pandas==0.25.1
 nltk==3.6.6
 fuzzywuzzy==0.18.0
-joblib==0.14.1
+joblib==1.2.0
 numpy==1.16.5
 networkx==2.3
 spacy==2.2.4
